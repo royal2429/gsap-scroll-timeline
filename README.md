@@ -11,6 +11,10 @@ pnpm install
 pnpm dev
 ```
 
+## Make it yours
+
+All the text, images and settings live in one object in **`src/data/content.tsx`**. Edit it and the section updates, with no need to touch the component. Put your images in `public/images/` and reference them as `images/<file>`.
+
 ## Use it in your project
 
 1. Install the only runtime dependency:
@@ -55,7 +59,7 @@ pnpm dev
 | `description` | `string` | — | Paragraph under the heading. |
 | `mobileDescription` | `string` | `description` | Shorter paragraph for mobile. |
 | `stepScroll` | `number` | `600` | Pixels of scroll spent on each step. |
-| `stickyTopOffset` | `number` | `170` | How far (px) the desktop panel is pulled above the top of the viewport while pinned. Use it to tuck the header under a fixed navbar; `0` pins flush to the top. |
+| `stickyTopOffset` | `number` | header height | How far (px) the desktop panel is pulled above the viewport while pinned. By default the header scrolls away and only the steps stay pinned. |
 | `mobileStickyTop` | `number` | `80` | Where the mobile panel pins (e.g. your navbar height). |
 | `timelineMaxVisual` | `number` | `0.7` | Fraction of the timeline rail the fill reaches at the end. |
 | `className` | `string` | — | Extra class on the root element. |

@@ -1,6 +1,5 @@
-import { Layers2 } from 'lucide-react';
 import { HowItWorks } from './how-it-works';
-import { DEMO_STEPS } from './demo-steps';
+import { content } from './data/content';
 
 export default function App() {
   return (
@@ -10,14 +9,7 @@ export default function App() {
         <p>A scroll-driven, pinned step-by-step section for React. Scroll down ↓</p>
       </section>
 
-      <HowItWorks
-        steps={DEMO_STEPS}
-        badgeIcon={<Layers2 />}
-        description="Arrange a pickup and our team takes care of the entire process, from collecting your package to ensuring it arrives safely at its final destination."
-        mobileDescription="Arrange a pickup and our team takes care of the entire process, from collecting your package to ensuring it arrives safely."
-        stickyTopOffset={0}
-        mobileStickyTop={0}
-      />
+      <HowItWorks {...content} />
 
       <section className="demo-intro">
         <p>End of section.</p>

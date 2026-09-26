@@ -85,7 +85,7 @@
   color: var(--hiw-accent);
 }
 
-.hiw-lead {
+.hiw .hiw-lead {
   margin: 0 auto;
   max-width: 1000px;
   font-size: clamp(1rem, 0.899rem + 0.476vw, 1.125rem);
@@ -194,7 +194,8 @@
 .hiw-timeline-wrap {
   position: absolute;
   left: 50%;
-  top: 232px;
+  /* Starts where the steps start, i.e. at the top of the viewport while pinned. */
+  top: var(--hiw-sticky-offset);
   bottom: 0;
   transform: translateX(-50%);
   width: 64px;

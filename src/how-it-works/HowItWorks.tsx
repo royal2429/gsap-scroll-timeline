@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -33,8 +33,8 @@ export type HowItWorksProps = {
   /** Pixels of page scroll spent on each step. */
   stepScroll?: number;
   /**
-   * Desktop sticky `top` is negative so the block sits slightly above the pin line (navbar overlap).
-   * The panel's min-height adds this many px back so the background reaches the viewport bottom.
+   * How far (px) the desktop panel is pulled above the viewport while pinned. Defaults to the
+   * header's height, so the header scrolls away and only the steps stay pinned.
    */
   stickyTopOffset?: number;
   /** Distance from the top of the viewport where the mobile panel pins (e.g. your navbar height). */
@@ -58,13 +58,15 @@ export function HowItWorks({
   description,
   mobileDescription = description,
   stepScroll = 600,
-  stickyTopOffset = 170,
+  stickyTopOffset,
   mobileStickyTop = 80,
   timelineMaxVisual = 0.7,
   className = '',
 }: HowItWorksProps) {
   const total = steps.length;
   const spacerRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const [headerOffset, setHeaderOffset] = useState(0);
 
   // Desktop refs
   const timelineFillRef = useRef<HTMLDivElement>(null);
@@ -75,6 +77,22 @@ export function HowItWorks({
   // Mobile refs
   const mobileLayerRefs = useRef<HTMLDivElement[]>([]);
   const mobileStepBarRefs = useRef<HTMLDivElement[]>([]);
+
+  // Measure how much of the panel sits above the steps, so pinning hides exactly the header.
+  useLayoutEffect(() => {
+    const header = headerRef.current;
+    if (!header || stickyTopOffset !== undefined) return;
+
+    const measure = () => {
+      const marginBottom = parseFloat(getComputedStyle(header).marginBottom) || 0;
+      setHeaderOffset(header.offsetTop + header.offsetHeight + marginBottom);
+    };
+    measure();
+
+    const observer = new ResizeObserver(measure);
+    observer.observe(header);
+    return () => observer.disconnect();
+  }, [stickyTopOffset]);
 
   useEffect(() => {
     const spacer = spacerRef.current;
@@ -220,7 +238,7 @@ export function HowItWorks({
         {
           '--hiw-steps': total,
           '--hiw-step-scroll': `${stepScroll}px`,
-          '--hiw-sticky-offset': `${stickyTopOffset}px`,
+          '--hiw-sticky-offset': `${stickyTopOffset ?? headerOffset}px`,
           '--hiw-mobile-top': `${mobileStickyTop}px`,
         } as CSSProperties
       }
@@ -233,7 +251,7 @@ export function HowItWorks({
         </div>
 
         <div className="hiw-inner">
-          <div className="hiw-header">
+          <div ref={headerRef} className="hiw-header">
             {header}
             {description && <p className="hiw-lead">{description}</p>}
           </div>
