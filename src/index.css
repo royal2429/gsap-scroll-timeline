@@ -1,0 +1,28 @@
+body {
+  margin: 0;
+  font-family: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.demo-intro {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 16px;
+  text-align: center;
+}
+
+.demo-intro h1 {
+  margin: 0;
+  font-size: clamp(36px, 6vw, 64px);
+  letter-spacing: -0.03em;
+}
+
+.demo-intro p {
+  margin: 0;
+  color: #64748b;
+}

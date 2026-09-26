@@ -1,0 +1,506 @@
+/* ═══════════════════════════════════════════════════════
+   HOW IT WORKS
+   Theme by overriding the custom properties on `.hiw`.
+   Layout values (--hiw-steps, --hiw-step-scroll, --hiw-sticky-offset,
+   --hiw-mobile-top) are set inline from the component props.
+═══════════════════════════════════════════════════════ */
+
+.hiw {
+  --hiw-accent: #2563eb;
+  --hiw-font: inherit;
+  --hiw-heading-color: #0f172a;
+  --hiw-muted-color: #64748b;
+  --hiw-bg: linear-gradient(180deg, #eef6ff 0%, #e0efff 50%, #f0f7ff 100%);
+
+  /* Shared spacer: its height is the scroll distance the section stays pinned for. */
+  height: calc(var(--hiw-steps) * var(--hiw-step-scroll) + 100vh);
+  position: relative;
+  font-family: var(--hiw-font);
+  color: var(--hiw-heading-color);
+}
+
+.hiw *,
+.hiw *::before,
+.hiw *::after {
+  box-sizing: border-box;
+}
+
+.hiw h2,
+.hiw h3,
+.hiw p {
+  margin: 0;
+}
+
+/* ── Header ─────────────────────────────────────────── */
+
+.hiw-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  margin-bottom: 12px;
+}
+
+.hiw-badge__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--hiw-accent);
+  line-height: 0;
+}
+
+.hiw-badge__icon svg {
+  width: 15px;
+  height: 15px;
+}
+
+.hiw-badge__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--hiw-accent);
+}
+
+.hiw-badge__text {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  color: var(--hiw-muted-color);
+}
+
+.hiw .hiw-heading {
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  color: var(--hiw-heading-color);
+  margin: 0 0 12px;
+}
+
+.hiw-heading__accent {
+  color: var(--hiw-accent);
+}
+
+.hiw-lead {
+  margin: 0 auto;
+  max-width: 1000px;
+  font-size: clamp(1rem, 0.899rem + 0.476vw, 1.125rem);
+  line-height: 1.5;
+  color: var(--hiw-muted-color);
+}
+
+/* Character-by-character heading reveal */
+.hiw-reveal {
+  display: block;
+  overflow: hidden;
+}
+
+.hiw-reveal__word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.hiw-reveal__space {
+  white-space: pre;
+}
+
+.hiw-reveal__char {
+  display: inline-block;
+  will-change: transform;
+}
+
+.hiw-reveal__char--hidden {
+  transform: translateY(100%);
+}
+
+.hiw-reveal__char--animated {
+  animation: hiw-char-reveal 1.3s cubic-bezier(0.19, 1, 0.22, 1) backwards;
+  animation-delay: calc(0.03s * var(--index));
+}
+
+@keyframes hiw-char-reveal {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* ── DESKTOP sticky panel ───────────────────────────── */
+
+.hiw-sticky {
+  position: sticky;
+  /* Negative top lets the block sit slightly above the pin line (navbar overlap). */
+  top: calc(-1 * var(--hiw-sticky-offset));
+  display: flex;
+  flex-direction: column;
+  /* 100vh + offset compensates the negative top so the background reaches the viewport bottom. */
+  min-height: calc(100vh + var(--hiw-sticky-offset));
+  min-height: calc(100dvh + var(--hiw-sticky-offset));
+  overflow: hidden;
+  background: var(--hiw-bg);
+}
+
+.hiw-inner {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 48px 48px 32px;
+}
+
+.hiw-header {
+  text-align: center;
+  margin-bottom: 24px;
+  flex-shrink: 0;
+}
+
+.hiw-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 64px 1fr;
+  min-height: 0;
+  align-items: center;
+}
+
+.hiw-col {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+.hiw-layer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  will-change: transform, opacity;
+}
+
+.hiw-layer--text {
+  padding: 0 56px 0 72px;
+}
+
+.hiw-layer--image {
+  padding: 0 72px 0 56px;
+}
+
+/* Timeline — only the solid fill + dot show */
+.hiw-timeline-wrap {
+  position: absolute;
+  left: 50%;
+  top: 232px;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 64px;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.hiw-timeline-fill {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 2px;
+  height: 0;
+  transform: translateX(-50%);
+  background: var(--hiw-accent);
+  border-radius: 2px;
+  z-index: 1;
+}
+
+.hiw-timeline-dot {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--hiw-accent);
+  z-index: 2;
+}
+
+.hiw-divider {
+  display: flex;
+  justify-content: center;
+  padding: 14px 0;
+}
+
+.hiw-divider__line {
+  width: 2px;
+  height: 100%;
+  background: color-mix(in srgb, var(--hiw-accent) 20%, transparent);
+  border-radius: 99px;
+}
+
+/* Step text */
+.hiw-step {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+}
+
+.hiw-step__count {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.hiw-step__number {
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+}
+
+.hiw-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  padding: 5px 14px;
+  border-radius: 100px;
+  background: color-mix(in srgb, var(--hiw-accent) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--hiw-accent) 18%, transparent);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--hiw-accent);
+}
+
+.hiw-tag__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--hiw-accent);
+  flex-shrink: 0;
+}
+
+.hiw .hiw-step__title {
+  font-size: clamp(1.75rem, 1.348rem + 1.905vw, 2.75rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.hiw .hiw-step__description {
+  margin-top: 8px;
+  font-size: clamp(14px, 1.6vw, 16px);
+  line-height: 1.7;
+  color: var(--hiw-muted-color);
+}
+
+/* Image card */
+.hiw-image {
+  width: 100%;
+  position: relative;
+  aspect-ratio: 4 / 4.5;
+  overflow: hidden;
+  border-radius: 18px;
+}
+
+.hiw-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.hiw-image__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.4) 0%, transparent 55%);
+}
+
+.hiw-image__tag {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hiw-image__tag-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--hiw-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--hiw-accent) 45%, transparent);
+}
+
+.hiw-image__tag-text {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: white;
+  text-transform: uppercase;
+}
+
+.hiw-image__count {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  padding: 5px 11px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 800;
+  color: white;
+  letter-spacing: -0.01em;
+}
+
+.hiw-image__count--mobile {
+  top: 14px;
+  right: 14px;
+  padding: 4px 10px;
+}
+
+/* ── MOBILE sticky panel ────────────────────────────── */
+
+.hiw-mobile-sticky {
+  display: none;
+  position: sticky;
+  top: var(--hiw-mobile-top);
+  height: 88vh;
+  overflow: hidden;
+}
+
+.hiw-mobile-inner {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.hiw-mobile-header {
+  padding: 20px 20px 12px;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.hiw-mobile-lead {
+  font-size: clamp(14px, 1.6vw, 16px);
+  line-height: 1.7;
+  color: var(--hiw-muted-color);
+}
+
+.hiw-mobile-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 0 16px 20px;
+}
+
+.hiw-mobile-card-col {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.hiw-mobile-layer {
+  position: absolute;
+  inset: 0;
+  will-change: transform, opacity;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.hiw-mobile-layer img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.hiw-mobile-layer__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.82) 0%,
+    rgba(0, 0, 0, 0.45) 50%,
+    rgba(0, 0, 0, 0.18) 100%
+  );
+}
+
+.hiw-mobile-layer__text {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px 18px 22px;
+}
+
+.hiw .hiw-mobile-layer__title {
+  margin-bottom: 8px;
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.035em;
+  color: #ffffff;
+  white-space: pre-line;
+}
+
+.hiw-mobile-layer__description {
+  font-size: clamp(14px, 1.6vw, 16px);
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* Segmented progress bar under the image */
+.hiw-mobile-step-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 14px 0 0;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.hiw-mobile-step-seg {
+  flex: 0 0 24px;
+  height: 3px;
+  border-radius: 999px;
+  transform-origin: center;
+  background: rgba(148, 163, 184, 0.4);
+  opacity: 0.85;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.hiw-mobile-step-seg[data-state='done'] {
+  background: color-mix(in srgb, var(--hiw-accent) 55%, transparent);
+  opacity: 1;
+}
+
+.hiw-mobile-step-seg[data-state='active'] {
+  background: var(--hiw-accent);
+  transform: scaleY(1.35);
+  opacity: 1;
+}
+
+/* ── Responsive switch ──────────────────────────────── */
+
+@media (max-width: 767px) {
+  .hiw-sticky {
+    display: none;
+  }
+  .hiw-mobile-sticky {
+    display: flex;
+    flex-direction: column;
+  }
+}
